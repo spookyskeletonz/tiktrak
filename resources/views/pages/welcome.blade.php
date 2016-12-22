@@ -1,5 +1,4 @@
 @extends('layout')
-
 @section('content')
     <div class="row">
         <div class="col-md1 col-md-offset-5">
@@ -10,6 +9,7 @@
                 <button type="submit" class="btn">go</button>
                 </label>
             </form>
+            </div>
         </div>
     </div>
 @stop
