@@ -19,9 +19,12 @@ class PagesController extends Controller
     }
 
     public function tickerFind(Request $request){
-    	$data = $this->_scrape($request->ticker);
-    	if(isset($data)){
-    		$this->_createChart($data, $request->ticker);
+    	$data1 = $this->_scrape($request->ticker1);
+    	$data2 = $this->_scrape($request->ticker2);
+    	$data3 = $this->_scrape($request->ticker3);
+    	if(isset($data1)||isset($data2)||isset($data3)){
+    		$datasets = [$data1, $data2, $data3];
+    		$this->_createChart($data1, $request->ticker1);
     		return view('pages.chart');
     	} else {
     		return view('pages.welcome');
