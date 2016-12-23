@@ -3,6 +3,7 @@
     <div class="row">
         <div class="col-md1 col-md-offset-5">
             <h1>tikTrak</h1>
+            <h2>Try Typing a Ticker eg. SYD for Sydney Airport</h2>
             <form method="POST">
                 <label>
                 <input type="text" class="form-control" placeholder="Track a ticker" name="ticker">
