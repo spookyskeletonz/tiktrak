@@ -24,7 +24,7 @@ class PagesController extends Controller
     	$data3 = $this->_scrape($request->ticker3);
     	if(isset($data1)||isset($data2)||isset($data3)){
     		$datasets = [$data1, $data2, $data3];
-    		$this->_createChart($data1, $request->ticker1);
+    		$this->_createChart($datasets, $request);
     		return view('pages.chart');
     	} else {
     		return view('pages.welcome');
@@ -44,19 +44,35 @@ class PagesController extends Controller
         return $match[1];
     }
 
-    private function _createChart($data, $ticker) {
+    private function _createChart($datasets, $request) {
     	$tickerTable = \Lava::DataTable(); //creates a new datatable to create the chart. Lava is a wrapper for Googles Chart API
 
     	$tickerTable->addNumberColumn('Day')
-    				->addNumberColumn($ticker);
+    				->addNumberColumn($request->ticker1)
+                    ->addNumberColumn($request->ticker2)
+                    ->addNumberColumn($request->ticker3);
     	//we just created the columns for the table
 
-    	foreach ($data as $num => $price){
-    		//for each closing price in the data, creates a new row, with the index of the arrax as num
-    		$tickerTable-> addRow([$num, $price]);
-    	}
+    	// foreach ($datasets[0] as $num => $price){
+    	// 	//for each closing price in the data, creates a new row, with the index of the arrax as num
+    	// 	$tickerTable-> addRow([$num, $price]);
+    	// }
 
+        foreach(range(0, 100) as $x){
+            $datasets[3][$x] = 0; 
+        }
+
+        foreach($datasets as $number => $data){
+            if($data == null){
+                $datasets[$number] = $datasets[3];
+            } else {
+                foreach($data as $num => $percent){
+                    $tickerTable->addRow([$num, $datasets[0][$num], $datasets[1][$num], $datasets[2][$num]]);
+                }
+                break;
+            }
+        }
     	//now we create the actual chart from the datatable
-    	$chart = \Lava::LineChart('ClosingPrices', $tickerTable, ['title' => 'Percentage Changes for the Tickers']);
+    	$chart = \Lava::LineChart('ClosingPrices', $tickerTable, ['title' => 'Percentage Changes for the Tickers', 'height' => 600, 'width' => 1200]);
     }
 }
