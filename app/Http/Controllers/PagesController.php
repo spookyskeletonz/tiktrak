@@ -73,6 +73,6 @@ class PagesController extends Controller
             }
         }
     	//now we create the actual chart from the datatable
-    	$chart = \Lava::LineChart('ClosingPrices', $tickerTable, ['title' => 'Percentage Changes for the Tickers', 'height' => 600, 'width' => 1200]);
+    	$chart = \Lava::LineChart('trakChart', $tickerTable, ['title' => 'Percentage Changes for the Tickers', 'height' => 600, 'width' => 1200]);
     }
 }
