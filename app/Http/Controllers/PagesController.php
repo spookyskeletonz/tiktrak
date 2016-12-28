@@ -19,30 +19,48 @@ class PagesController extends Controller
     }
 
     public function tickerFind(Request $request){
-    	$data1 = $this->_scrape($request->ticker1, $request->entries);
+        if($request->chartoptions == 'percentagechange'){
+            $data1 = $this->_percentScrape($request->ticker1, $request->entries);
+            $data2 = $this->_percentScrape($request->ticker2, $request->entries);
+            $data3 = $this->_percentScrape($request->ticker3, $request->entries);
+        } elseif($request->chartoptions == 'closingprice') {
+            $data1 = $this->_closingPriceScrape($request->ticker1, $request->entries);
+            $data2 = $this->_closingPriceScrape($request->ticker2, $request->entries);
+            $data3 = $this->_closingPriceScrape($request->ticker3, $request->entries);
+        }
         $datedata1 = $this->_dateScrape($request->ticker1, $request->entries);
-    	$data2 = $this->_scrape($request->ticker2, $request->entries);
         $datedata2 = $this->_dateScrape($request->ticker2, $request->entries);
-    	$data3 = $this->_scrape($request->ticker3, $request->entries);
         $datedata3 = $this->_dateScrape($request->ticker3, $request->entries);
     	if(isset($data1)||isset($data2)||isset($data3)){
     		$datasets = [$data1, $data2, $data3];
             $datedatasets = [$datedata1, $datedata2, $datedata3];
-    		$this->_createChart($datasets, $request, $datedatasets, $request->entries);
+    		$this->_createChart($datasets, $request, $datedatasets, $request->entries, $request->chartoptions);
     		return view('pages.chart');
     	} else {
-    		return view('pages.welcome');
+            return view('pages.welcome');
     	}
     }
 
-    private function _scrape($ticker, $entries) {
-    	//basic web scrape, taking the last 3 closing prices atm
+    private function _percentScrape($ticker, $entries) {
+    	//basic web scrape, taking percentage changes
     	try {
     		$data = file_get_contents("http://data.asx.com.au/data/1/share/$ticker/prices?interval=daily&count=$entries");
     	} catch(Exception $ex) {;
     		return null;
     	}
         $regex = '/change_in_percent":"([^%]*)%/';
+        preg_match_all($regex, $data, $match);
+        return $match[1];
+    }
+
+    private function _closingPriceScrape($ticker, $entries){
+        //basic web scrape, taking closing prices
+        try {
+            $data = file_get_contents("http://data.asx.com.au/data/1/share/$ticker/prices?interval=daily&count=$entries");
+        } catch(Exception $ex) {;
+            return null;
+        }
+        $regex = '/close_price":([^,]*)/';
         preg_match_all($regex, $data, $match);
         return $match[1];
     }
@@ -58,7 +76,7 @@ class PagesController extends Controller
         return $match[1];
     }
 
-    private function _createChart($datasets, $request, $datedatasets, $entries) {
+    private function _createChart($datasets, $request, $datedatasets, $entries, $charttype) {
     	$tickerTable = \Lava::DataTable(); //creates a new datatable to create the chart. Lava is a wrapper for Googles Chart API
 
     	$tickerTable->addDateColumn('Day')
@@ -67,19 +85,8 @@ class PagesController extends Controller
                     ->addNumberColumn($request->ticker3);
     	//we just created the columns for the table
 
-    	// foreach ($datasets[0] as $num => $price){
-    	// 	//for each closing price in the data, creates a new row, with the index of the arrax as num
-    	// 	$tickerTable-> addRow([$num, $price]);
-    	// }
-
-        foreach(range($entries, 0) as $x){
-            $datasets[3][$x] = 0; 
-        }
-
         foreach($datasets as $number => $data){
-            if($data == null){
-                $datasets[$number] = $datasets[3];
-            } else {
+            if($data != null) {
                 foreach($data as $num => $percent){
                     foreach($datedatasets as $datedata){
                         if($datedata == null){
@@ -93,6 +100,10 @@ class PagesController extends Controller
             }
         }
     	//now we create the actual chart from the datatable
-    	$chart = \Lava::LineChart('trakChart', $tickerTable, ['title' => 'Percentage Changes for the Tickers', 'height' => 600, 'width' => 1200]);
+        if($charttype == 'percentagechange'){
+            $chart = \Lava::LineChart('trakChart', $tickerTable, ['title' => 'Percentage Changes for Stocks', 'height' => 600, 'width' => 1200]);
+        } elseif($charttype == 'closingprice'){
+            $chart = \Lava::LineChart('trakChart', $tickerTable, ['title' => 'Closing Prices for Stocks', 'height' => 600, 'width' => 1200]);
+        }
     }
 }

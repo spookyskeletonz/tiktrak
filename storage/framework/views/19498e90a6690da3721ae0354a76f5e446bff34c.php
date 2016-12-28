@@ -8,26 +8,38 @@
 </head>
 	
 <body>
-	<div class="container">
-	<form class="form-inline" method="POST">
-		<div class="form-group">
-		    <label>
-		    Tickers:
-		    <input type="text" class="form-control" placeholder="Track a ticker" name="ticker1">
-		    <input type="text" class="form-control" placeholder="Track a ticker" name="ticker2">
-		    <input type="text" class="form-control" placeholder="Track a ticker" name="ticker3">
-		    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
-		    </label>
-		</div>
-		<div class="form-group">
-			<label>
-			Number of Dates:
-			<input type="number" min="1" step="1" class="form-control" placeholder="0-infinity" name="entries">
-			<input type="hidden" name="_token1" value="<?php echo e(csrf_token()); ?>">
-			</label>
-		</div>
-		<button type="submit" class="btn">go</button>
-	</form> 
+	<div class="container" style="text-align: center">
+		<form class="form-inline" method="POST">
+			<div class="form-group">
+			    <label>
+			    Tickers:
+			    <input type="text" class="form-control" placeholder="Track a ticker" name="ticker1">
+			    <input type="text" class="form-control" placeholder="Track a ticker" name="ticker2">
+			    <input type="text" class="form-control" placeholder="Track a ticker" name="ticker3">
+			    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+			    </label>
+			</div>
+			<div class="form-group">
+				<label>
+				Number of Dates:
+				<input type="number" min="1" step="1" class="form-control" placeholder="0-infinity" name="entries" required="true">
+				<input type="hidden" name="_token1" value="<?php echo e(csrf_token()); ?>">
+				</label>
+			</div>
+			<div class="radio-horizontal">
+				<label>
+				<input type="radio" name="chartoptions" value="percentagechange" checked>
+				Percentage Changes
+				</label>
+			</div>
+			<div class="radio-horizontal">
+				<label>
+				<input type="radio" name="chartoptions" value="closingprice">
+				Closing Prices
+				</label>
+			</div>
+			<button type="submit" class="btn">go</button>
+		</form>
 	</div>
 	<?php echo $__env->yieldContent('content'); ?>
 </body>
