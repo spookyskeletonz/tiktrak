@@ -13,6 +13,10 @@
 
 Route::get('about', 'PagesController@about');
 
-Route::get('/', 'PagesController@home');
+Route::get('/', 'PagesController@mytraks');
 
 Route::post('/', 'PagesController@tickerFind');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');

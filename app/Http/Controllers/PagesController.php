@@ -10,12 +10,18 @@ use App\Http\Controllers\Controller;
 
 class PagesController extends Controller
 {
-    public function home(){
-		return view('pages.welcome');
-    }
-
     public function about(){
     	return view('pages.about');
+    }
+
+    public function mytraks(Request $request){
+        if(isset($request->add)){
+            echo "added to My Traks";
+            return view('pages.mytraks');
+        }
+        else{
+            return view('pages.welcome');
+        }
     }
 
     public function tickerFind(Request $request){
@@ -37,7 +43,7 @@ class PagesController extends Controller
     		$this->_createChart($datasets, $request, $datedatasets, $request->entries, $request->chartoptions);
     		return view('pages.chart');
     	} else {
-            return view('pages.welcome');
+            return $this->mytraks($request);
     	}
     }
 
