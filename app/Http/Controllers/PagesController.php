@@ -16,7 +16,15 @@ class PagesController extends Controller
 
     public function mytraks(Request $request){
         if(isset($request->add)){
-            echo "added to My Traks";
+            $user = \Auth::user();
+            dd($user);
+           //  $user->tables = $user->recentTable;
+           //  $count="0";
+           //  var_dump($user->tables);
+           //  $tickerTable = $user->tables;
+           //  //foreach($user->tables as $tickertable){
+           //      $chart = \Lava::LineChart('trakChart'.$count, $tickerTable, ['title' => 'Chart'.$count, 'height' => 600, 'width' => 1200]);
+           // // }
             return view('pages.mytraks');
         }
         else{
@@ -110,6 +118,15 @@ class PagesController extends Controller
             $chart = \Lava::LineChart('trakChart', $tickerTable, ['title' => 'Percentage Changes for Stocks', 'height' => 600, 'width' => 1200]);
         } elseif($charttype == 'closingprice'){
             $chart = \Lava::LineChart('trakChart', $tickerTable, ['title' => 'Closing Prices for Stocks', 'height' => 600, 'width' => 1200]);
+        }
+
+        //if user is logged in, will add the table of data to the recentTable field for the user. This is so if
+        //the user wants to add the chart to mytraks, we have the data available to load into that field
+        if(\Auth::check()){
+                $user = \Auth::user();
+                $user->recentTable = serialize($tickerTable);
+                //dd($user);
+                $user->save();
         }
     }
 }
