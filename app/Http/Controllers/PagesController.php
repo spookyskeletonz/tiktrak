@@ -15,23 +15,31 @@ class PagesController extends Controller
     }
 
     public function mytraks(Request $request){
+        $user = \Auth::user();
         if(isset($request->add)){
-            $user = \Auth::user();
-            dd($user);
-           //  $user->tables = $user->recentTable;
-           //  $count="0";
-           //  var_dump($user->tables);
-           //  $tickerTable = $user->tables;
-           //  //foreach($user->tables as $tickertable){
-           //      $chart = \Lava::LineChart('trakChart'.$count, $tickerTable, ['title' => 'Chart'.$count, 'height' => 600, 'width' => 1200]);
-           // // }
-            return view('pages.mytraks');
+            $user->tables .= "DELIMITER".$user->recentTable;
+            $user->save();
         }
-        else{
-            return view('pages.welcome');
+        $count="0";
+        $tickerTables = preg_split("/DELIMITER/", $user->tables);
+        var_dump($tickerTables);
+        foreach($tickerTables as $tickerTable){
+            if($tickerTable = " " || $tickerTable = ""){
+                $tickerTable = next($tickerTables);
+            }
+            $tickerTable = unserialize($tickerTable);
+            $chart = \Lava::LineChart('trakChart'.$count, $tickerTable, ['title' => 'Chart'.$count, 'height' => 600, 'width' => 1200]);
+            $count++;
+            if($count == count($tickerTables)-1){
+                break;
+            }
         }
+        return view('pages.mytraks');
     }
 
+    public Function home (){
+        return view('pages.welcome');
+    }
     public function tickerFind(Request $request){
         if($request->chartoptions == 'percentagechange'){
             $data1 = $this->_percentScrape($request->ticker1, $request->entries);

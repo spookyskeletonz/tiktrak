@@ -13,7 +13,9 @@
 
 Route::get('about', 'PagesController@about');
 
-Route::get('/', 'PagesController@mytraks');
+Route::get('mytraks', 'PagesController@mytraks');
+
+Route::get('/', 'PagesController@home');
 
 Route::post('/', 'PagesController@tickerFind');
 
