@@ -4,17 +4,16 @@
 <h2>MYTRAKS</h2>
 @section('content')
 @stop
-<div id="closing-prices-chart">
     <?php
     	$user = \Auth::user();
     	$count = "0";
     	$tickerTables = preg_split("/DELIMITER/", $user->tables);
     	foreach($tickerTables as $tickerTable){
     		if($count != count($tickerTables)-1){
-    			//echo Lava::render('LineChart', 'trakChart'.$count, 'closing-prices-chart');
-    			echo "test";
+    			echo '<div id="closing-prices-chart'.$count.'">';
+    			echo Lava::render('LineChart', 'trakChart'.$count, 'closing-prices-chart'.$count);
+    			echo '</div>';
                 $count++;
             }
     	}
     ?>
-</div>
