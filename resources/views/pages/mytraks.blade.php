@@ -13,6 +13,9 @@
     			echo '<div id="chart'.$count.'">';
     			echo Lava::render('LineChart', 'trakChart'.$count, 'chart'.$count);
     			echo '</div>';
+    			echo '<form class="form-inline" method="GET">';
+    			echo 	'<button type="submit" class="btn" name="delete" value="'.$count.'">Delete</button>';
+    			echo '</form>';
                 $count++;
             }
     	}

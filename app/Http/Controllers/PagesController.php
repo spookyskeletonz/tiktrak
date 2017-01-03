@@ -23,6 +23,15 @@ class PagesController extends Controller
             $user->tables .= "DELIMITER".$user->recentTable;
             $user->save();
         }
+        if(isset($request->delete)){
+            $this->deletetrak($request);
+        }
+
+        return $this->displayTraks();
+    }
+
+    public function displayTraks(){
+        $user = \Auth::user();
         $count="0";
         $tickerTables = preg_split("/DELIMITER/", $user->tables);
         foreach($tickerTables as $tickerTable){
@@ -53,7 +62,16 @@ class PagesController extends Controller
         return view('pages.mytraks');
     }
 
-    public Function home (){
+    public function deletetrak(Request $request){
+        $user = \Auth::user();
+        //dd($request->delete);
+        $tickerTables = preg_split("/DELIMITER/", $user->tables);
+        $tickerTables[$request->delete] = '';
+        $user->tables = "DELIMITER".join("DELIMITER", $tickerTables);
+        $user->save();
+    }
+
+    public function home(){
         return view('pages.welcome');
     }
     public function tickerFind(Request $request){
