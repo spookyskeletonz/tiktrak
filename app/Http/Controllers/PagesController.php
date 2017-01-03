@@ -35,8 +35,8 @@ class PagesController extends Controller
         $count="0";
         $tickerTables = preg_split("/DELIMITER/", $user->tables);
         foreach($tickerTables as $tickerTable){
-            if($tickerTable = " " || $tickerTable = ""){
-                $tickerTable = next($tickerTables);
+            if($tickerTable == " " || $tickerTable == ""){
+                continue;
             }
             if(preg_match("/percentagechange(.*)/", $tickerTable, $match)){
                 $tickerTable = $match[1];
@@ -66,7 +66,12 @@ class PagesController extends Controller
         $user = \Auth::user();
         //dd($request->delete);
         $tickerTables = preg_split("/DELIMITER/", $user->tables);
-        $tickerTables[$request->delete] = '';
+        foreach($tickerTables as $count => $tickerTable){
+            if($tickerTable == "" || $tickerTable == " "){
+                unset($tickerTables[$count]);
+            }
+        }
+        unset($tickerTables[$request->delete+1]);
         $user->tables = "DELIMITER".join("DELIMITER", $tickerTables);
         $user->save();
     }

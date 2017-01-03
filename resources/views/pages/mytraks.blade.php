@@ -9,6 +9,9 @@
     	$count = "0";
     	$tickerTables = preg_split("/DELIMITER/", $user->tables);
     	foreach($tickerTables as $tickerTable){
+    		if($tickerTable == "" || $tickerTable == " "){
+    			continue;
+    		}
     		if($count != count($tickerTables)-1){
     			echo '<div id="chart'.$count.'">';
     			echo Lava::render('LineChart', 'trakChart'.$count, 'chart'.$count);
