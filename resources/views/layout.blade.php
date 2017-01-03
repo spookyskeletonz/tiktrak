@@ -9,7 +9,7 @@
 	
 <body>
 	<div class="container" style="text-align: center">
-		<form class="form-inline" method="POST">
+		<form class="form-inline" method="POST" action="{{url('/')}}">
 			<div class="form-group">
 			    <label>
 			    Tickers:

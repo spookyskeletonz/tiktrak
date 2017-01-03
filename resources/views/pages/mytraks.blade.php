@@ -10,8 +10,8 @@
     	$tickerTables = preg_split("/DELIMITER/", $user->tables);
     	foreach($tickerTables as $tickerTable){
     		if($count != count($tickerTables)-1){
-    			echo '<div id="closing-prices-chart'.$count.'">';
-    			echo Lava::render('LineChart', 'trakChart'.$count, 'closing-prices-chart'.$count);
+    			echo '<div id="chart'.$count.'">';
+    			echo Lava::render('LineChart', 'trakChart'.$count, 'chart'.$count);
     			echo '</div>';
                 $count++;
             }

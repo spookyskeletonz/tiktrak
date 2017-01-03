@@ -15,6 +15,9 @@ class PagesController extends Controller
     }
 
     public function mytraks(Request $request){
+        if(!\Auth::check()){
+            return view('pages.welcome');
+        }
         $user = \Auth::user();
         if(isset($request->add)){
             $user->tables .= "DELIMITER".$user->recentTable;
@@ -22,13 +25,26 @@ class PagesController extends Controller
         }
         $count="0";
         $tickerTables = preg_split("/DELIMITER/", $user->tables);
-        var_dump($tickerTables);
         foreach($tickerTables as $tickerTable){
             if($tickerTable = " " || $tickerTable = ""){
                 $tickerTable = next($tickerTables);
             }
+            if(preg_match("/percentagechange(.*)/", $tickerTable, $match)){
+                $tickerTable = $match[1];
+                $charttype = "Percentage Change";
+            } elseif(preg_match("/closingprice(.*)/", $tickerTable, $match)){
+                $tickerTable = $match[1];
+                $charttype = "Closing Price";
+            }
             $tickerTable = unserialize($tickerTable);
-            $chart = \Lava::LineChart('trakChart'.$count, $tickerTable, ['title' => 'Chart'.$count, 'height' => 600, 'width' => 1200]);
+            $ticker1 = $tickerTable->getColumnLabel(1);
+            if($ticker1 == "") $ticker1 = "(Not Given)";
+            $ticker2 = $tickerTable->getColumnLabel(2);
+            if($ticker2 == "") $ticker2 = "(Not Given)";
+            $ticker3 = $tickerTable->getColumnLabel(3);
+            if($ticker3 == "") $ticker3 = "(Not Given)";
+            $dayCount = $tickerTable->getRowCount();
+            $chart = \Lava::LineChart('trakChart'.$count, $tickerTable, ['title' => 'Chart'.$count.": $ticker1 vs $ticker2 vs $ticker3 over $dayCount Days for $charttype", 'height' => 600, 'width' => 1200]);
             $count++;
             if($count == count($tickerTables)-1){
                 break;
@@ -132,7 +148,7 @@ class PagesController extends Controller
         //the user wants to add the chart to mytraks, we have the data available to load into that field
         if(\Auth::check()){
                 $user = \Auth::user();
-                $user->recentTable = serialize($tickerTable);
+                $user->recentTable = $charttype.serialize($tickerTable);
                 //dd($user);
                 $user->save();
         }
