@@ -71,7 +71,8 @@ class PagesController extends Controller
                 unset($tickerTables[$count]);
             }
         }
-        unset($tickerTables[$request->delete+1]);
+        $tickerTables = array_values($tickerTables);
+        unset($tickerTables[$request->delete]);
         $user->tables = "DELIMITER".join("DELIMITER", $tickerTables);
         $user->save();
     }

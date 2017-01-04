@@ -20,7 +20,7 @@
     			echo '</div>';
     			echo '</div>';
     			echo '<div class="col-md-4">';
-    			echo '<form class="form-inline" method="GET" action="{{ url(\'/mytraks\') }}">';
+    			?><form class="form-inline" method="GET" action="/mytraks"><?php
     			echo 	'<button type="submit" class="btn" name="delete" value="'.$count.'">Delete</button>';
     			echo '</form>';
     			echo '</div>';
