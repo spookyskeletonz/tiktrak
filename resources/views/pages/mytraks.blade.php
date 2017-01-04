@@ -13,12 +13,18 @@
     			continue;
     		}
     		if($count != count($tickerTables)-1){
+    			echo '<div class="row">';
+    			echo '<div class="col-md-8">';
     			echo '<div id="chart'.$count.'">';
     			echo Lava::render('LineChart', 'trakChart'.$count, 'chart'.$count);
     			echo '</div>';
-    			echo '<form class="form-inline" method="GET">';
+    			echo '</div>';
+    			echo '<div class="col-md-4">';
+    			echo '<form class="form-inline" method="GET" action="{{ url(\'/mytraks\') }}">';
     			echo 	'<button type="submit" class="btn" name="delete" value="'.$count.'">Delete</button>';
     			echo '</form>';
+    			echo '</div>';
+    			echo '</div>';
                 $count++;
             }
     	}
